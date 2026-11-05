@@ -17,6 +17,7 @@ public static class DependencyInjection
         services.AddSingleton<IChatClient, FakeChatClient>();
         services.AddSingleton<QuizValidator>();
         services.AddScoped<QuizGenerator>();
+        services.AddScoped<QuizService>();
 
         return services;
     }

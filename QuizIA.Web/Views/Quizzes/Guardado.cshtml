@@ -1,0 +1,7 @@
+@model QuizIA.Entidades.Quiz
+@{ ViewData["Title"] = "Quiz guardado"; }
+
+<div class="alert alert-success">
+    Quiz guardado: <strong>@Model.Titulo</strong> (@Model.Preguntas.Count preguntas, generado con @Model.Proveedor).
+</div>
+<a asp-action="Crear" class="btn btn-primary">Crear otro quiz</a>

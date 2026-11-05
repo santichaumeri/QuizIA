@@ -1,0 +1,82 @@
+@model RevisionQuizViewModel
+@{ ViewData["Title"] = "Revisar quiz"; }
+
+<h1>Revisá el quiz</h1>
+<p class="text-muted">Editá lo que haga falta y dejá tildadas solo las preguntas que querés guardar.</p>
+
+@if (!string.IsNullOrEmpty(Model.Mensaje))
+{
+    <div class="alert alert-info">@Model.Mensaje</div>
+}
+
+<form asp-action="Guardar" method="post">
+    <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+    <input type="hidden" asp-for="TextoOrigen" />
+
+    <div class="mb-4">
+        <label asp-for="Titulo" class="form-label"></label>
+        <input asp-for="Titulo" class="form-control" />
+        <span asp-validation-for="Titulo" class="text-danger"></span>
+    </div>
+
+    @for (var i = 0; i < Model.Preguntas.Count; i++)
+    {
+        var p = Model.Preguntas[i];
+        <div class="card mb-3 @(p.Errores.Count > 0 ? "border-danger" : "")">
+            <div class="card-header">
+                <div class="form-check">
+                    <input asp-for="Preguntas[i].Incluir" class="form-check-input" />
+                    <label asp-for="Preguntas[i].Incluir" class="form-check-label fw-bold">Pregunta @(i + 1)</label>
+                </div>
+            </div>
+            <div class="card-body">
+                @if (p.Errores.Count > 0)
+                {
+                    <div class="alert alert-danger py-2">
+                        <ul class="mb-0">
+                            @foreach (var e in p.Errores)
+                            {
+                                <li>@e</li>
+                            }
+                        </ul>
+                    </div>
+                }
+
+                <div class="mb-3">
+                    <label class="form-label">Enunciado</label>
+                    <textarea name="Preguntas[@i].Enunciado" class="form-control" rows="2">@p.Enunciado</textarea>
+                </div>
+
+                <label class="form-label">Opciones (marcá la correcta)</label>
+                @for (var j = 0; j < 4; j++)
+                {
+                    <div class="input-group mb-2">
+                        <div class="input-group-text">
+                            <input type="radio" class="form-check-input mt-0" name="Preguntas[@i].IndiceCorrecta" value="@j" checked="@(p.IndiceCorrecta == j)" />
+                        </div>
+                        <span class="input-group-text">@((char)('A' + j))</span>
+                        <input type="text" class="form-control" name="Preguntas[@i].Opciones[@j]" value="@p.Opciones[j]" />
+                    </div>
+                }
+
+                <div class="mb-3 mt-3">
+                    <label class="form-label">Explicación</label>
+                    <textarea name="Preguntas[@i].Explicacion" class="form-control" rows="2">@p.Explicacion</textarea>
+                </div>
+
+                <div>
+                    <label class="form-label">Cita textual del texto</label>
+                    <div class="form-control-plaintext fst-italic">@p.CitaTextual</div>
+                    <input type="hidden" name="Preguntas[@i].CitaTextual" value="@p.CitaTextual" />
+                </div>
+            </div>
+        </div>
+    }
+
+    <button type="submit" class="btn btn-success" id="btnGuardar">Guardar quiz</button>
+    <a asp-action="Crear" class="btn btn-outline-secondary">Empezar de nuevo</a>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

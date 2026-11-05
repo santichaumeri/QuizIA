@@ -71,6 +71,7 @@ public partial class FakeChatClient : IChatClient
     }
 
     public object? GetService(Type serviceType, object? serviceKey = null) =>
+        serviceType == typeof(ChatClientMetadata) ? new ChatClientMetadata("Fake") :
         serviceKey is null && serviceType.IsInstanceOfType(this) ? this : null;
 
     public void Dispose() { }

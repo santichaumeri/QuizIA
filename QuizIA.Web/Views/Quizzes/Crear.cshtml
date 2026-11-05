@@ -1,0 +1,27 @@
+@model CrearQuizViewModel
+@{ ViewData["Title"] = "Crear quiz"; }
+
+<h1>Crear quiz</h1>
+<p class="text-muted">Pegá un texto de estudio y la IA va a generar preguntas de opción múltiple. Después las revisás antes de guardar.</p>
+
+<form asp-action="Generar" method="post">
+    <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+    <div class="mb-3">
+        <label asp-for="Texto" class="form-label"></label>
+        <textarea asp-for="Texto" class="form-control" rows="12"></textarea>
+        <span asp-validation-for="Texto" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3" style="max-width: 220px">
+        <label asp-for="Cantidad" class="form-label"></label>
+        <input asp-for="Cantidad" class="form-control" type="number" min="1" max="10" />
+        <span asp-validation-for="Cantidad" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary" id="btnGenerar">Generar preguntas</button>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
