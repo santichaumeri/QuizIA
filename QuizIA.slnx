@@ -1,3 +1,5 @@
 <Solution>
+  <Project Path="QuizIA.Entidades/QuizIA.Entidades.csproj" />
+  <Project Path="QuizIA.Logica/QuizIA.Logica.csproj" />
   <Project Path="QuizIA.Web/QuizIA.Web.csproj" />
 </Solution>

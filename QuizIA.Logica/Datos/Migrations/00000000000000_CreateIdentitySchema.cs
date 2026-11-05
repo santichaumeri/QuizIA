@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore.Migrations;
 using System;
 
-namespace QuizIA.Web.Data.Migrations
+namespace QuizIA.Logica.Datos.Migrations
 {
     public partial class CreateIdentitySchema : Migration
     {

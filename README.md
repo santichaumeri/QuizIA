@@ -11,6 +11,15 @@ Trabajo Práctico de Investigación - Programación Web 3 (UNLaM) - Grupo 6 - Te
 - Microsoft.Extensions.AI (`IChatClient`)
 - Bootstrap
 
+## Estructura de la solución
+| Proyecto | Responsabilidad |
+|---|---|
+| `QuizIA.Entidades` | Clases del dominio (Quiz, Pregunta, Intento). No depende de nadie. |
+| `QuizIA.Logica` | Acceso a datos (EF Core, migraciones), servicios de negocio e integración con IA. |
+| `QuizIA.Web` | ASP.NET Core MVC: controladores, vistas, login (Identity). |
+
+Dependencias: `Web → Logica → Entidades`.
+
 ## Requisitos
 - SDK de .NET 10
 - SQL Server (LocalDB, que viene con Visual Studio, o una instancia propia)
@@ -28,7 +37,13 @@ Trabajo Práctico de Investigación - Programación Web 3 (UNLaM) - Grupo 6 - Te
 3. Crear/actualizar la base:
 
    ```bash
-   dotnet ef database update --project QuizIA.Web
+   dotnet ef database update --project QuizIA.Logica --startup-project QuizIA.Web
+   ```
+
+   Para crear una migración nueva después de cambiar las entidades:
+
+   ```bash
+   dotnet ef migrations add NombreDelCambio --project QuizIA.Logica --startup-project QuizIA.Web
    ```
 
 4. Ejecutar:
