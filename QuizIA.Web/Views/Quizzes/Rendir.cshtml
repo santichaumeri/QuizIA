@@ -1,0 +1,27 @@
+@model QuizIA.Entidades.Quiz
+@{ ViewData["Title"] = Model.Titulo; }
+
+<h1>@Model.Titulo</h1>
+<p class="text-muted">Elegí una opción por pregunta y apretá Corregir.</p>
+
+<form asp-action="Corregir" asp-route-id="@Model.Id" method="post">
+    @foreach (var p in Model.Preguntas)
+    {
+        var opciones = new[] { p.OpcionA, p.OpcionB, p.OpcionC, p.OpcionD };
+        <div class="card mb-3">
+            <div class="card-header fw-bold">@p.Orden. @p.Enunciado</div>
+            <div class="card-body">
+                @for (var j = 0; j < 4; j++)
+                {
+                    <div class="form-check mb-2">
+                        <input class="form-check-input" type="radio" name="respuestas[@p.Id]" id="r_@(p.Id)_@j" value="@j" />
+                        <label class="form-check-label" for="r_@(p.Id)_@j">@((char)('A' + j)). @opciones[j]</label>
+                    </div>
+                }
+            </div>
+        </div>
+    }
+
+    <button type="submit" class="btn btn-success" id="btnCorregir">Corregir</button>
+    <a asp-action="Index" class="btn btn-outline-secondary">Volver</a>
+</form>

@@ -29,6 +29,9 @@
                         @if (User.Identity?.IsAuthenticated == true)
                         {
                             <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="Quizzes" asp-action="Index">Mis quizzes</a>
+                            </li>
+                            <li class="nav-item">
                                 <a class="nav-link text-dark" asp-controller="Quizzes" asp-action="Crear">Crear quiz</a>
                             </li>
                         }

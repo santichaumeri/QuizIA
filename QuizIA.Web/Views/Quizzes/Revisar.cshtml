@@ -47,10 +47,10 @@
                     <textarea name="Preguntas[@i].Enunciado" class="form-control" rows="2">@p.Enunciado</textarea>
                 </div>
 
-                <label class="form-label">Opciones (marcá la correcta)</label>
+                <label class="form-label">Opciones <span class="text-muted">(el círculo marca la respuesta correcta según la IA; cambialo si no estás de acuerdo)</span></label>
                 @for (var j = 0; j < 4; j++)
                 {
-                    <div class="input-group mb-2">
+                    <div class="input-group mb-2 opcion @(p.IndiceCorrecta == j ? "border border-success rounded bg-success-subtle" : "")">
                         <div class="input-group-text">
                             <input type="radio" class="form-check-input mt-0" name="Preguntas[@i].IndiceCorrecta" value="@j" checked="@(p.IndiceCorrecta == j)" />
                         </div>
@@ -79,4 +79,17 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <script>
+        // Resalta en verde la opcion marcada como correcta, tambien cuando el usuario la cambia.
+        document.querySelectorAll('input[type=radio]').forEach(function (radio) {
+            radio.addEventListener('change', function () {
+                document.querySelectorAll('input[type=radio][name="' + radio.name + '"]').forEach(function (r) {
+                    r.closest('.opcion').classList.toggle('border', r.checked);
+                    r.closest('.opcion').classList.toggle('border-success', r.checked);
+                    r.closest('.opcion').classList.toggle('rounded', r.checked);
+                    r.closest('.opcion').classList.toggle('bg-success-subtle', r.checked);
+                });
+            });
+        });
+    </script>
 }

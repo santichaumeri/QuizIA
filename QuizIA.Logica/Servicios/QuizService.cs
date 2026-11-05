@@ -50,4 +50,17 @@ public class QuizService(ApplicationDbContext db, IChatClient chatClient)
           .AsNoTracking()
           .Include(q => q.Preguntas.OrderBy(p => p.Orden))
           .FirstOrDefaultAsync(q => q.Id == id && q.UserId == userId, ct);
+
+    /// <summary>Lista los quizzes del usuario (mas nuevos primero) sin traer el texto origen, que puede ser grande.</summary>
+    public Task<List<QuizResumen>> ListarAsync(string userId, CancellationToken ct = default) =>
+        db.Quizzes
+          .AsNoTracking()
+          .Where(q => q.UserId == userId)
+          .OrderByDescending(q => q.FechaCreacion)
+          .Select(q => new QuizResumen(q.Id, q.Titulo, q.FechaCreacion, q.Proveedor, q.Preguntas.Count))
+          .ToListAsync(ct);
+
+    /// <summary>Borra el quiz solo si es del usuario (las preguntas se borran en cascada). Devuelve false si no existia.</summary>
+    public async Task<bool> EliminarAsync(int id, string userId, CancellationToken ct = default) =>
+        await db.Quizzes.Where(q => q.Id == id && q.UserId == userId).ExecuteDeleteAsync(ct) > 0;
 }

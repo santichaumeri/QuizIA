@@ -93,15 +93,50 @@ public class QuizzesController(
         }
 
         var quiz = await quizService.GuardarAsync(UserId, model.Titulo, texto, incluidas.Select(ADto), ct);
-        return RedirectToAction(nameof(Guardado), new { id = quiz.Id });
+        TempData["Exito"] = $"Quiz \"{quiz.Titulo}\" guardado con {quiz.Preguntas.Count} preguntas.";
+        return RedirectToAction(nameof(Index));
     }
 
+    // Mis quizzes: solo los del usuario logueado.
     [HttpGet]
-    public async Task<IActionResult> Guardado(int id, CancellationToken ct)
+    public async Task<IActionResult> Index(CancellationToken ct) =>
+        View(await quizService.ListarAsync(UserId, ct));
+
+    // Todas las acciones siguientes buscan el quiz por id Y por usuario: uno ajeno da 404.
+    [HttpGet]
+    public async Task<IActionResult> Rendir(int id, CancellationToken ct)
     {
-        // ObtenerAsync filtra por UserId: no se puede ver el quiz de otro usuario.
         var quiz = await quizService.ObtenerAsync(id, UserId, ct);
+        // La vista no imprime IndiceCorrecta, Explicacion ni CitaTextual: no se pueden espiar en el HTML.
         return quiz is null ? NotFound() : View(quiz);
+    }
+
+    [HttpPost, ValidateAntiForgeryToken]
+    public async Task<IActionResult> Corregir(int id, Dictionary<int, int>? respuestas, CancellationToken ct)
+    {
+        var quiz = await quizService.ObtenerAsync(id, UserId, ct);
+        if (quiz is null) return NotFound();
+
+        respuestas ??= new();
+        var vm = new ResultadoQuizViewModel
+        {
+            Quiz = quiz,
+            // Solo cuentan las respuestas a preguntas de ESTE quiz; sin responder = incorrecta.
+            Preguntas = quiz.Preguntas.Select(p => new ResultadoPreguntaViewModel
+            {
+                Pregunta = p,
+                Elegida = respuestas.TryGetValue(p.Id, out var e) && e is >= 0 and <= 3 ? e : null
+            }).ToList()
+        };
+        return View("Resultado", vm);
+    }
+
+    [HttpPost, ValidateAntiForgeryToken]
+    public async Task<IActionResult> Borrar(int id, CancellationToken ct)
+    {
+        if (!await quizService.EliminarAsync(id, UserId, ct)) return NotFound();
+        TempData["Exito"] = "Quiz borrado.";
+        return RedirectToAction(nameof(Index));
     }
 
     private static PreguntaDto ADto(PreguntaRevisionViewModel p) => new(

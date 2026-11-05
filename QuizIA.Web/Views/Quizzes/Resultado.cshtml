@@ -1,0 +1,35 @@
+@model ResultadoQuizViewModel
+@{ ViewData["Title"] = "Resultado"; }
+
+<h1>@Model.Quiz.Titulo</h1>
+<div class="alert @(Model.Aciertos == Model.Preguntas.Count ? "alert-success" : "alert-info") fs-5">
+    Tu puntaje: <strong>@Model.Aciertos de @Model.Preguntas.Count</strong>
+</div>
+
+@foreach (var r in Model.Preguntas)
+{
+    var p = r.Pregunta;
+    var opciones = new[] { p.OpcionA, p.OpcionB, p.OpcionC, p.OpcionD };
+    <div class="card mb-3 @(r.Acerto ? "border-success" : "border-danger")">
+        <div class="card-header fw-bold">
+            @p.Orden. @p.Enunciado
+            <span class="badge @(r.Acerto ? "bg-success" : "bg-danger") ms-2">@(r.Acerto ? "Correcta" : r.Elegida is null ? "Sin responder" : "Incorrecta")</span>
+        </div>
+        <div class="card-body">
+            @for (var j = 0; j < 4; j++)
+            {
+                var clase = j == p.IndiceCorrecta ? "list-group-item-success" : (r.Elegida == j ? "list-group-item-danger" : "");
+                <div class="list-group-item @clase">
+                    @((char)('A' + j)). @opciones[j]
+                    @if (j == p.IndiceCorrecta) { <span class="ms-2">✔ respuesta correcta</span> }
+                    @if (r.Elegida == j && j != p.IndiceCorrecta) { <span class="ms-2">✘ tu respuesta</span> }
+                </div>
+            }
+            <p class="mt-3 mb-1"><strong>Explicación:</strong> @p.Explicacion</p>
+            <p class="mb-0 text-muted fst-italic">Del texto: “@p.CitaTextual”</p>
+        </div>
+    </div>
+}
+
+<a asp-action="Rendir" asp-route-id="@Model.Quiz.Id" class="btn btn-primary">Reintentar</a>
+<a asp-action="Index" class="btn btn-outline-secondary">Mis quizzes</a>

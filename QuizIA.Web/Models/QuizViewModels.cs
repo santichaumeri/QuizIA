@@ -44,3 +44,18 @@ public class PreguntaRevisionViewModel
     // Solo se usa para mostrar; no se lee del formulario, se recalcula en el servidor.
     public List<string> Errores { get; set; } = new();
 }
+
+public class ResultadoQuizViewModel
+{
+    public required QuizIA.Entidades.Quiz Quiz { get; init; }
+    public required List<ResultadoPreguntaViewModel> Preguntas { get; init; }
+    public int Aciertos => Preguntas.Count(p => p.Acerto);
+}
+
+public class ResultadoPreguntaViewModel
+{
+    public required QuizIA.Entidades.Pregunta Pregunta { get; init; }
+    /// <summary>Opcion elegida (0 a 3) o null si no respondio.</summary>
+    public int? Elegida { get; init; }
+    public bool Acerto => Elegida == Pregunta.IndiceCorrecta;
+}
