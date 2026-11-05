@@ -15,6 +15,7 @@ public static class DependencyInjection
 
         // Proveedor de IA. Por ahora el falso; en el Paso 7 se cambia por Gemini.
         services.AddSingleton<IChatClient, FakeChatClient>();
+        services.AddSingleton<QuizValidator>();
         services.AddScoped<QuizGenerator>();
 
         return services;

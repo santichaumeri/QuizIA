@@ -7,7 +7,7 @@ namespace QuizIA.Logica.Servicios;
 /// Le pide a la IA (a traves de IChatClient) un quiz a partir de un texto.
 /// No sabe que proveedor hay detras: Gemini, el falso, etc.
 /// </summary>
-public class QuizGenerator(IChatClient chatClient)
+public class QuizGenerator(IChatClient chatClient, QuizValidator validator)
 {
     public const int MaxPreguntas = 10;
     public const int MaxCaracteresTexto = 8000;
@@ -49,5 +49,39 @@ public class QuizGenerator(IChatClient chatClient)
             throw new InvalidOperationException("La IA no devolvió un quiz con el formato esperado.");
 
         return quiz;
+    }
+
+    /// <summary>
+    /// Genera, valida y, si faltan preguntas validas, reintenta UNA vez.
+    /// Devuelve primero las validas (hasta 'cantidad') y despues las invalidas marcadas con sus errores.
+    /// </summary>
+    public async Task<List<PreguntaValidada>> GenerarYValidarAsync(string texto, int cantidad, CancellationToken ct = default)
+    {
+        var acumuladas = new List<PreguntaDto>();
+        Exception? ultimoError = null;
+
+        for (var intento = 1; intento <= 2; intento++)
+        {
+            var faltan = cantidad - validator.Validar(acumuladas, texto).Count(v => v.EsValida);
+            if (faltan <= 0) break;
+
+            try
+            {
+                var quiz = await GenerarAsync(texto, faltan, ct);
+                acumuladas.AddRange(quiz.Preguntas);
+            }
+            catch (Exception ex) when (ex is InvalidOperationException or System.Text.Json.JsonException)
+            {
+                ultimoError = ex; // formato roto: se cuenta como intento fallido
+            }
+        }
+
+        if (acumuladas.Count == 0)
+            throw new InvalidOperationException("La IA no devolvió preguntas utilizables.", ultimoError);
+
+        var validadas = validator.Validar(acumuladas, texto);
+        var validas = validadas.Where(v => v.EsValida).Take(cantidad).ToList();
+        var invalidas = validadas.Where(v => !v.EsValida).Take(Math.Max(0, cantidad - validas.Count));
+        return validas.Concat(invalidas).ToList();
     }
 }
