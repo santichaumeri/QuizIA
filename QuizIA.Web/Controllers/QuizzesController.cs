@@ -30,10 +30,11 @@ public class QuizzesController(
         {
             resultado = await generator.GenerarYValidarAsync(model.Texto, model.Cantidad, ct);
         }
-        catch (Exception ex) when (ex is InvalidOperationException or HttpRequestException)
+        catch (Exception ex) when (ex is InvalidOperationException or HttpRequestException or System.ClientModel.ClientResultException)
         {
+            // Incluye errores del servicio de IA (limite de uso excedido, clave invalida, sin conexion).
             logger.LogWarning(ex, "Fallo la generacion del quiz");
-            ModelState.AddModelError(string.Empty, "No se pudo generar el quiz. Probá de nuevo o con otro texto.");
+            ModelState.AddModelError(string.Empty, "No se pudo generar el quiz. Probá de nuevo en un momento o con otro texto.");
             return View("Crear", model);
         }
 

@@ -21,7 +21,6 @@ else
                 <th>Título</th>
                 <th>Creado</th>
                 <th>Preguntas</th>
-                <th>Generado con</th>
                 <th></th>
             </tr>
         </thead>
@@ -32,7 +31,6 @@ else
                     <td>@q.Titulo</td>
                     <td>@q.FechaCreacion.ToLocalTime().ToString("dd/MM/yyyy HH:mm")</td>
                     <td>@q.CantidadPreguntas</td>
-                    <td>@q.Proveedor</td>
                     <td class="text-end">
                         <a asp-action="Rendir" asp-route-id="@q.Id" class="btn btn-sm btn-primary">Rendir</a>
                         <form asp-action="Borrar" asp-route-id="@q.Id" method="post" class="d-inline"

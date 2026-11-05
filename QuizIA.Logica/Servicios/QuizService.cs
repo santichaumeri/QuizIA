@@ -1,5 +1,4 @@
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.AI;
 using QuizIA.Entidades;
 using QuizIA.Logica.Datos;
 using QuizIA.Logica.Dtos;
@@ -7,7 +6,7 @@ using QuizIA.Logica.Dtos;
 namespace QuizIA.Logica.Servicios;
 
 /// <summary>Acceso a la base para los quizzes. Convierte los DTOs de la IA en entidades.</summary>
-public class QuizService(ApplicationDbContext db, IChatClient chatClient)
+public class QuizService(ApplicationDbContext db)
 {
     public async Task<Quiz> GuardarAsync(
         string userId, string titulo, string textoOrigen,
@@ -18,7 +17,8 @@ public class QuizService(ApplicationDbContext db, IChatClient chatClient)
             UserId = userId,
             Titulo = titulo.Trim(),
             TextoOrigen = textoOrigen,
-            Proveedor = chatClient.GetService<ChatClientMetadata>()?.ProviderName ?? "Desconocido",
+            // A proposito generico: la app no revela que proveedor de IA hay detras.
+            Proveedor = "IA",
             FechaCreacion = DateTime.UtcNow
         };
 
