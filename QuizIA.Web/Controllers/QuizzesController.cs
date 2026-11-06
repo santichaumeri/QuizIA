@@ -12,7 +12,8 @@ public class QuizzesController(
     QuizGenerator generator,
     QuizValidator validator,
     QuizService quizService,
-    ILogger<QuizzesController> logger) : Controller
+    ILogger<QuizzesController> logger,
+    IWebHostEnvironment env) : Controller
 {
     // El id sale de la cookie de sesion, nunca de un campo del formulario.
     private string UserId => User.FindFirstValue(ClaimTypes.NameIdentifier)!;
@@ -34,7 +35,18 @@ public class QuizzesController(
         {
             // Incluye errores del servicio de IA (limite de uso excedido, clave invalida, sin conexion).
             logger.LogWarning(ex, "Fallo la generacion del quiz");
-            ModelState.AddModelError(string.Empty, "No se pudo generar el quiz. Probá de nuevo en un momento o con otro texto.");
+            var mensaje = ex is System.ClientModel.ClientResultException { Status: 429 }
+                ? "Se alcanzó el límite de uso del servicio de IA. Esperá un minuto y probá de nuevo."
+                : ex is System.ClientModel.ClientResultException { Status: 503 }
+                    ? "El servicio de IA está saturado en este momento. Probá de nuevo en unos segundos."
+                    : "No se pudo generar el quiz. Probá de nuevo en un momento o con otro texto.";
+            ModelState.AddModelError(string.Empty, mensaje);
+            // Solo en desarrollo: mostrar la causa tecnica para poder diagnosticar. En produccion no se expone.
+            if (env.IsDevelopment())
+                ModelState.AddModelError(string.Empty, $"[Detalle técnico] {ex.GetType().Name}: {ex.Message}" +
+                    (ex.InnerException is null ? "" : $" | Causa: {ex.InnerException.Message}") +
+                    (ex is System.ClientModel.ClientResultException cre && cre.GetRawResponse()?.Content is { } cuerpo
+                        ? $" | Respuesta del servicio: {Recortar(cuerpo.ToString())}" : ""));
             return View("Crear", model);
         }
 
@@ -156,6 +168,8 @@ public class QuizzesController(
             while (p.Opciones.Count < 4) p.Opciones.Add(string.Empty);
         }
     }
+
+    private static string Recortar(string s) => s.Length <= 600 ? s : s[..600] + "…";
 
     private static string TituloSugerido(string texto)
     {
