@@ -4,7 +4,7 @@
 <h1>Crear quiz</h1>
 <p class="text-muted">Pegá un texto de estudio y la IA va a generar preguntas de opción múltiple. Después las revisás antes de guardar.</p>
 
-<form asp-action="Generar" method="post">
+<form asp-action="Generar" method="post" data-loading="Generando preguntas…" class="card card-body p-4">
     <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
 
     <div class="mb-3">

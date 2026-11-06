@@ -1,26 +1,177 @@
+/* ===== QuizIA: paleta verde agua y tipografia =====
+   Las variables de Bootstrap (--bs-*) se sobrescriben aca para que botones, enlaces y
+   formularios tomen el color de la marca sin tocar cada vista. */
+
+:root {
+  --qz-primary: #0d9488;
+  --qz-primary-dark: #0f766e;
+  --qz-accent: #14b8a6;
+  --qz-soft: #f0fdfa;
+  --qz-border: #ccebe7;
+  --qz-text: #163a37;
+
+  --bs-primary: #0d9488;
+  --bs-primary-rgb: 13, 148, 136;
+  --bs-link-color: #0d9488;
+  --bs-link-color-rgb: 13, 148, 136;
+  --bs-link-hover-color: #0f766e;
+  --bs-link-hover-color-rgb: 15, 118, 110;
+  --bs-body-color: #163a37;
+  --bs-body-bg: #f7fdfc;
+  --bs-body-font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --bs-border-radius: 0.6rem;
+  --bs-border-radius-lg: 0.9rem;
+}
+
 html {
-  font-size: 14px;
-}
-
-@media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
-}
-
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
-}
-
-html {
+  font-size: 15px;
   position: relative;
   min-height: 100%;
 }
 
-body {
-  margin-bottom: 60px;
+@media (min-width: 768px) {
+  html { font-size: 16px; }
 }
 
+/* Footer pegado abajo sin posicionamiento absoluto */
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+main { flex: 1 0 auto; }
+
+h1, h2, h3, h4, h5, h6, .navbar-brand, .display-1, .display-2, .display-3, .display-4, .display-5, .display-6 {
+  font-family: 'Poppins', 'Inter', system-ui, sans-serif;
+  color: var(--qz-primary-dark);
+  font-weight: 600;
+}
+
+/* ----- Botones ----- */
+.btn-primary {
+  --bs-btn-bg: var(--qz-primary);
+  --bs-btn-border-color: var(--qz-primary);
+  --bs-btn-hover-bg: var(--qz-primary-dark);
+  --bs-btn-hover-border-color: var(--qz-primary-dark);
+  --bs-btn-active-bg: var(--qz-primary-dark);
+  --bs-btn-active-border-color: var(--qz-primary-dark);
+  --bs-btn-disabled-bg: var(--qz-primary);
+  --bs-btn-disabled-border-color: var(--qz-primary);
+  --bs-btn-focus-shadow-rgb: 13, 148, 136;
+}
+
+.btn-outline-primary {
+  --bs-btn-color: var(--qz-primary);
+  --bs-btn-border-color: var(--qz-primary);
+  --bs-btn-hover-bg: var(--qz-primary);
+  --bs-btn-hover-border-color: var(--qz-primary);
+  --bs-btn-active-bg: var(--qz-primary-dark);
+  --bs-btn-active-border-color: var(--qz-primary-dark);
+  --bs-btn-focus-shadow-rgb: 13, 148, 136;
+}
+
+.btn { font-weight: 500; border-radius: 0.6rem; }
+
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+  box-shadow: 0 0 0 0.2rem rgba(13, 148, 136, 0.25);
+  border-color: var(--qz-accent);
+}
+
+.form-check-input:checked {
+  background-color: var(--qz-primary);
+  border-color: var(--qz-primary);
+}
+
+/* ----- Barra de navegacion ----- */
+.navbar {
+  background: #fff;
+  border-bottom: 1px solid var(--qz-border);
+  box-shadow: 0 2px 8px rgba(13, 148, 136, 0.06);
+}
+
+.navbar-brand { display: flex; align-items: center; gap: .55rem; font-size: 1.25rem; }
+
+.brand-mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: .55rem;
+  background: linear-gradient(135deg, var(--qz-primary-dark), var(--qz-accent));
+  color: #fff;
+  font-weight: 700;
+  font-size: 1.05rem;
+}
+
+.navbar .nav-link { color: var(--qz-text); font-weight: 500; }
+.navbar .nav-link:hover { color: var(--qz-primary); }
+
+/* ----- Tarjetas y tablas ----- */
+.card {
+  border: 1px solid var(--qz-border);
+  border-radius: 0.9rem;
+  box-shadow: 0 2px 10px rgba(13, 148, 136, 0.06);
+  overflow: hidden;
+}
+
+.card-header {
+  background: var(--qz-soft);
+  border-bottom: 1px solid var(--qz-border);
+}
+
+.table > thead { background: var(--qz-soft); }
+.table > thead th { color: var(--qz-primary-dark); font-weight: 600; border-bottom-color: var(--qz-border); }
+
+.alert { border-radius: 0.7rem; }
+
+/* ----- Home ----- */
+.hero {
+  background: linear-gradient(135deg, var(--qz-primary-dark) 0%, var(--qz-primary) 55%, var(--qz-accent) 100%);
+  color: #fff;
+  border-radius: 1.5rem;
+  padding: 3.5rem 2rem;
+  box-shadow: 0 12px 30px rgba(13, 148, 136, 0.25);
+}
+
+.hero h1 { color: #fff; font-size: clamp(1.9rem, 4.5vw, 3rem); line-height: 1.15; }
+.hero p.lead { color: rgba(255, 255, 255, 0.92); max-width: 40rem; }
+
+.step-card { height: 100%; }
+.step-number {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  background: var(--qz-soft);
+  color: var(--qz-primary-dark);
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
+  border: 2px solid var(--qz-accent);
+  margin-bottom: .75rem;
+}
+
+.trust-strip {
+  background: var(--qz-soft);
+  border: 1px solid var(--qz-border);
+  border-left: 5px solid var(--qz-primary);
+  border-radius: .8rem;
+  padding: 1rem 1.25rem;
+}
+
+/* ----- Pie de pagina ----- */
+.footer {
+  flex-shrink: 0;
+  background: #fff;
+  border-top: 1px solid var(--qz-border);
+  padding: 1rem 0;
+  font-size: .9rem;
+}
+
+/* ----- Formularios de Identity (vienen de un paquete: heredan el estilo desde aca) ----- */
 .form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
   color: var(--bs-secondary-color);
   text-align: end;

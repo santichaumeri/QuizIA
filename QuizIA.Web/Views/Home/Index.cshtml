@@ -1,8 +1,58 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Inicio";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<section class="hero text-center text-md-start mb-5">
+    <h1 class="mb-3">Convertí cualquier texto en un quiz de estudio</h1>
+    <p class="lead mb-4">
+        Pegá un apunte, un artículo o un resumen. La inteligencia artificial genera preguntas de opción múltiple,
+        vos las revisás, y después practicás con puntaje y explicaciones.
+    </p>
+    @if (User.Identity?.IsAuthenticated == true)
+    {
+        <a class="btn btn-light btn-lg me-2" asp-controller="Quizzes" asp-action="Crear">Crear un quiz</a>
+        <a class="btn btn-outline-light btn-lg" asp-controller="Quizzes" asp-action="Index">Mis quizzes</a>
+    }
+    else
+    {
+        <a class="btn btn-light btn-lg me-2" asp-area="Identity" asp-page="/Account/Register">Crear mi cuenta</a>
+        <a class="btn btn-outline-light btn-lg" asp-area="Identity" asp-page="/Account/Login">Ingresar</a>
+    }
+</section>
+
+<h2 class="h3 mb-3">Cómo funciona</h2>
+<div class="row g-3 mb-5">
+    <div class="col-md-4">
+        <div class="card step-card">
+            <div class="card-body">
+                <div class="step-number">1</div>
+                <h3 class="h5">Pegá un texto</h3>
+                <p class="mb-0 text-muted">Copiá el material que querés estudiar y elegí cuántas preguntas querés, hasta 10.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card step-card">
+            <div class="card-body">
+                <div class="step-number">2</div>
+                <h3 class="h5">La IA arma las preguntas</h3>
+                <p class="mb-0 text-muted">Cada pregunta trae cuatro opciones, una explicación y la cita del texto que la respalda.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card step-card">
+            <div class="card-body">
+                <div class="step-number">3</div>
+                <h3 class="h5">Revisá y practicá</h3>
+                <p class="mb-0 text-muted">Corregí lo que haga falta, guardá el quiz y rendilo cuando quieras para ver tu puntaje.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="trust-strip">
+    <strong>No confiamos ciegamente en la IA.</strong>
+    Cada pregunta se verifica por código contra tu texto, y las que no pasan el control quedan marcadas.
+    Vos tenés la última palabra antes de guardar.
 </div>
