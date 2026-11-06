@@ -1,14 +1,19 @@
-/* ===== QuizIA: paleta verde agua y tipografia =====
+/* ===== QuizIA: paleta verde agua, tipografia y tema claro/oscuro =====
    Las variables de Bootstrap (--bs-*) se sobrescriben aca para que botones, enlaces y
-   formularios tomen el color de la marca sin tocar cada vista. */
+   formularios tomen el color de la marca sin tocar cada vista.
+   El tema oscuro se activa con data-bs-theme="dark" en <html> (ver el script del layout y site.js). */
 
 :root {
   --qz-primary: #0d9488;
   --qz-primary-dark: #0f766e;
   --qz-accent: #14b8a6;
+  --qz-link: #0d9488;
+  --qz-heading: #0f766e;
   --qz-soft: #f0fdfa;
+  --qz-surface: #ffffff;
   --qz-border: #ccebe7;
   --qz-text: #163a37;
+  --qz-shadow: rgba(13, 148, 136, 0.08);
 
   --bs-primary: #0d9488;
   --bs-primary-rgb: 13, 148, 136;
@@ -21,6 +26,29 @@
   --bs-body-font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   --bs-border-radius: 0.6rem;
   --bs-border-radius-lg: 0.9rem;
+}
+
+/* Tema oscuro: mismas variables con valores para fondo oscuro.
+   Va despues de :root y con la misma especificidad, asi que gana sobre los valores de arriba. */
+[data-bs-theme="dark"] {
+  --qz-link: #5eead4;
+  --qz-heading: #5eead4;
+  --qz-soft: #123533;
+  --qz-surface: #102927;
+  --qz-border: #1f4a46;
+  --qz-text: #d5f2ee;
+  --qz-shadow: rgba(0, 0, 0, 0.35);
+
+  --bs-link-color: #5eead4;
+  --bs-link-color-rgb: 94, 234, 212;
+  --bs-link-hover-color: #99f6e4;
+  --bs-link-hover-color-rgb: 153, 246, 228;
+  --bs-body-color: #d5f2ee;
+  --bs-body-color-rgb: 213, 242, 238;
+  --bs-body-bg: #0b1f1e;
+  --bs-body-bg-rgb: 11, 31, 30;
+  --bs-secondary-color: rgba(213, 242, 238, 0.7);
+  --bs-border-color: #1f4a46;
 }
 
 html {
@@ -42,9 +70,9 @@ body {
 
 main { flex: 1 0 auto; }
 
-h1, h2, h3, h4, h5, h6, .navbar-brand, .display-1, .display-2, .display-3, .display-4, .display-5, .display-6 {
+h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6, .navbar-brand, .display-1, .display-2, .display-3, .display-4, .display-5, .display-6 {
   font-family: 'Poppins', 'Inter', system-ui, sans-serif;
-  color: var(--qz-primary-dark);
+  color: var(--qz-heading);
   font-weight: 600;
 }
 
@@ -62,10 +90,11 @@ h1, h2, h3, h4, h5, h6, .navbar-brand, .display-1, .display-2, .display-3, .disp
 }
 
 .btn-outline-primary {
-  --bs-btn-color: var(--qz-primary);
+  --bs-btn-color: var(--qz-link);
   --bs-btn-border-color: var(--qz-primary);
   --bs-btn-hover-bg: var(--qz-primary);
   --bs-btn-hover-border-color: var(--qz-primary);
+  --bs-btn-hover-color: #fff;
   --bs-btn-active-bg: var(--qz-primary-dark);
   --bs-btn-active-border-color: var(--qz-primary-dark);
   --bs-btn-focus-shadow-rgb: 13, 148, 136;
@@ -74,7 +103,7 @@ h1, h2, h3, h4, h5, h6, .navbar-brand, .display-1, .display-2, .display-3, .disp
 .btn { font-weight: 500; border-radius: 0.6rem; }
 
 .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.2rem rgba(13, 148, 136, 0.25);
+  box-shadow: 0 0 0 0.2rem rgba(13, 148, 136, 0.3);
   border-color: var(--qz-accent);
 }
 
@@ -85,9 +114,9 @@ h1, h2, h3, h4, h5, h6, .navbar-brand, .display-1, .display-2, .display-3, .disp
 
 /* ----- Barra de navegacion ----- */
 .navbar {
-  background: #fff;
+  background: var(--qz-surface);
   border-bottom: 1px solid var(--qz-border);
-  box-shadow: 0 2px 8px rgba(13, 148, 136, 0.06);
+  box-shadow: 0 2px 8px var(--qz-shadow);
 }
 
 .navbar-brand { display: flex; align-items: center; gap: .55rem; font-size: 1.25rem; }
@@ -106,13 +135,29 @@ h1, h2, h3, h4, h5, h6, .navbar-brand, .display-1, .display-2, .display-3, .disp
 }
 
 .navbar .nav-link { color: var(--qz-text); font-weight: 500; }
-.navbar .nav-link:hover { color: var(--qz-primary); }
+.navbar .nav-link:hover { color: var(--qz-link); }
+
+/* El icono de la hamburguesa es oscuro por defecto: se invierte en el tema oscuro */
+[data-bs-theme="dark"] .navbar-toggler-icon { filter: invert(1); }
+[data-bs-theme="dark"] .navbar-toggler { border-color: var(--qz-border); }
+
+/* Boton para cambiar de tema */
+.theme-toggle {
+  border-color: var(--qz-border);
+  color: var(--qz-text);
+  line-height: 1;
+  padding: .35rem .6rem;
+  font-size: 1.05rem;
+}
+.theme-toggle:hover { background: var(--qz-soft); color: var(--qz-link); border-color: var(--qz-accent); }
 
 /* ----- Tarjetas y tablas ----- */
 .card {
+  --bs-card-bg: var(--qz-surface);
+  --bs-card-cap-bg: var(--qz-soft);
   border: 1px solid var(--qz-border);
   border-radius: 0.9rem;
-  box-shadow: 0 2px 10px rgba(13, 148, 136, 0.06);
+  box-shadow: 0 2px 10px var(--qz-shadow);
   overflow: hidden;
 }
 
@@ -121,8 +166,9 @@ h1, h2, h3, h4, h5, h6, .navbar-brand, .display-1, .display-2, .display-3, .disp
   border-bottom: 1px solid var(--qz-border);
 }
 
+.table { --bs-table-bg: transparent; --bs-table-color: var(--bs-body-color); --bs-table-border-color: var(--qz-border); }
 .table > thead { background: var(--qz-soft); }
-.table > thead th { color: var(--qz-primary-dark); font-weight: 600; border-bottom-color: var(--qz-border); }
+.table > thead th { color: var(--qz-heading); font-weight: 600; border-bottom-color: var(--qz-border); background: var(--qz-soft); }
 
 .alert { border-radius: 0.7rem; }
 
@@ -133,6 +179,11 @@ h1, h2, h3, h4, h5, h6, .navbar-brand, .display-1, .display-2, .display-3, .disp
   border-radius: 1.5rem;
   padding: 3.5rem 2rem;
   box-shadow: 0 12px 30px rgba(13, 148, 136, 0.25);
+}
+
+[data-bs-theme="dark"] .hero {
+  background: linear-gradient(135deg, #0a4f49 0%, #0d7c72 55%, #12a396 100%);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
 }
 
 .hero h1 { color: #fff; font-size: clamp(1.9rem, 4.5vw, 3rem); line-height: 1.15; }
@@ -147,7 +198,7 @@ h1, h2, h3, h4, h5, h6, .navbar-brand, .display-1, .display-2, .display-3, .disp
   height: 2.5rem;
   border-radius: 50%;
   background: var(--qz-soft);
-  color: var(--qz-primary-dark);
+  color: var(--qz-heading);
   font-family: 'Poppins', sans-serif;
   font-weight: 600;
   border: 2px solid var(--qz-accent);
@@ -165,7 +216,7 @@ h1, h2, h3, h4, h5, h6, .navbar-brand, .display-1, .display-2, .display-3, .disp
 /* ----- Pie de pagina ----- */
 .footer {
   flex-shrink: 0;
-  background: #fff;
+  background: var(--qz-surface);
   border-top: 1px solid var(--qz-border);
   padding: 1rem 0;
   font-size: .9rem;

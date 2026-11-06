@@ -5,6 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - QuizIA</title>
     <script type="importmap"></script>
+    @* Aplica el tema guardado (o el del sistema) ANTES de pintar, para evitar un parpadeo blanco. *@
+    <script>
+        (function () {
+            try {
+                var tema = localStorage.getItem('qz-tema');
+                if (!tema) tema = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+                document.documentElement.setAttribute('data-bs-theme', tema);
+            } catch (e) { /* sin localStorage: queda el tema claro */ }
+        })();
+    </script>
     @* Tipografias: Poppins (titulos) e Inter (texto). Sin internet se usa la tipografia del sistema. *@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -15,7 +25,7 @@
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light mb-4">
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm mb-4">
             <div class="container">
                 <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
                     <span class="brand-mark">Q</span>QuizIA
@@ -39,6 +49,8 @@
                             </li>
                         }
                     </ul>
+                    <button type="button" id="themeToggle" class="btn btn-outline-secondary theme-toggle ms-sm-2 my-2 my-sm-0"
+                            aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">☾</button>
                     <partial name="_LoginPartial" />
                 </div>
             </div>
