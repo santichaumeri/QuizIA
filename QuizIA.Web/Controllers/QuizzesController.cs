@@ -13,7 +13,8 @@ public class QuizzesController(
     QuizValidator validator,
     QuizService quizService,
     ILogger<QuizzesController> logger,
-    IWebHostEnvironment env) : Controller
+    IWebHostEnvironment env,
+    System.Threading.RateLimiting.PartitionedRateLimiter<string> limitador) : Controller
 {
     // El id sale de la cookie de sesion, nunca de un campo del formulario.
     private string UserId => User.FindFirstValue(ClaimTypes.NameIdentifier)!;
@@ -25,6 +26,14 @@ public class QuizzesController(
     public async Task<IActionResult> Generar(CrearQuizViewModel model, CancellationToken ct)
     {
         if (!ModelState.IsValid) return View("Crear", model);
+
+        // Tope de 5 generaciones por minuto por usuario (cada una consume cuota de la IA).
+        using var permiso = limitador.AttemptAcquire(UserId);
+        if (!permiso.IsAcquired)
+        {
+            ModelState.AddModelError(string.Empty, "Hiciste muchas generaciones seguidas. Esperá un minuto y probá de nuevo.");
+            return View("Crear", model);
+        }
 
         List<PreguntaValidada> resultado;
         try

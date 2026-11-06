@@ -1,3 +1,4 @@
+using System.Threading.RateLimiting;
 using Microsoft.AspNetCore.Identity;
 using QuizIA.Logica;
 using QuizIA.Logica.Datos;
@@ -12,6 +13,16 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = false)
     .AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddControllersWithViews();
+
+// Limite de generaciones por usuario: protege la cuota gratuita de la IA y evita abusos.
+// Se consulta desde el controlador para poder mostrar el mensaje sin perder el texto pegado.
+builder.Services.AddSingleton(PartitionedRateLimiter.Create<string, string>(usuarioId =>
+    RateLimitPartition.GetFixedWindowLimiter(usuarioId, _ => new FixedWindowRateLimiterOptions
+    {
+        PermitLimit = 5,
+        Window = TimeSpan.FromMinutes(1),
+        QueueLimit = 0
+    })));
 
 var app = builder.Build();
 

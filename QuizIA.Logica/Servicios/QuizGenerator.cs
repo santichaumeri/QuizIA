@@ -27,6 +27,26 @@ public class QuizGenerator(IChatClient chatClient, QuizValidator validator)
         - Respondé en el mismo idioma del texto.
         """;
 
+    private static readonly System.Text.RegularExpressions.Regex EtiquetaTexto =
+        new(@"<\s*/?\s*texto\s*>", System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+
+    /// <summary>
+    /// Defensa contra "romper la caja": si el texto del usuario trae sus propias etiquetas &lt;texto&gt; o
+    /// &lt;/texto&gt;, podria cerrar el delimitador y hacer pasar sus frases como instrucciones.
+    /// Se quitan antes de armar el prompt. Se repite hasta que no quede ninguna, porque al quitar una
+    /// se pueden juntar pedazos y formar otra (por ejemplo "&lt;te&lt;/texto&gt;xto&gt;").
+    /// </summary>
+    public static string Neutralizar(string texto)
+    {
+        string anterior;
+        do
+        {
+            anterior = texto;
+            texto = EtiquetaTexto.Replace(texto, string.Empty);
+        } while (texto != anterior);
+        return texto;
+    }
+
     public async Task<QuizDto> GenerarAsync(string texto, int cantidad, CancellationToken ct = default)
     {
         if (string.IsNullOrWhiteSpace(texto))
@@ -39,7 +59,7 @@ public class QuizGenerator(IChatClient chatClient, QuizValidator validator)
         var mensajes = new List<ChatMessage>
         {
             new(ChatRole.System, InstruccionesSistema),
-            new(ChatRole.User, $"Cantidad de preguntas: {cantidad}\n<texto>\n{texto}\n</texto>")
+            new(ChatRole.User, $"Cantidad de preguntas: {cantidad}\n<texto>\n{Neutralizar(texto)}\n</texto>")
         };
 
         // Salida estructurada: la libreria envia el esquema JSON de QuizDto y convierte la respuesta.
